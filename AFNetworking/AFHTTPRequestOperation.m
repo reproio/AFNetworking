@@ -1,4 +1,4 @@
-// AFHTTPRequestOperation.m
+// RPRHTTPRequestOperation.m
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,43 +19,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AFHTTPRequestOperation.h"
+#import "RPRHTTPRequestOperation.h"
 
 static dispatch_queue_t http_request_operation_processing_queue() {
-    static dispatch_queue_t af_http_request_operation_processing_queue;
+    static dispatch_queue_t rpr_http_request_operation_processing_queue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        af_http_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.http-request.processing", DISPATCH_QUEUE_CONCURRENT);
+        rpr_http_request_operation_processing_queue = dispatch_queue_create("com.alamofire.networking.http-request.processing", DISPATCH_QUEUE_CONCURRENT);
     });
 
-    return af_http_request_operation_processing_queue;
+    return rpr_http_request_operation_processing_queue;
 }
 
 static dispatch_group_t http_request_operation_completion_group() {
-    static dispatch_group_t af_http_request_operation_completion_group;
+    static dispatch_group_t rpr_http_request_operation_completion_group;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        af_http_request_operation_completion_group = dispatch_group_create();
+        rpr_http_request_operation_completion_group = dispatch_group_create();
     });
 
-    return af_http_request_operation_completion_group;
+    return rpr_http_request_operation_completion_group;
 }
 
 #pragma mark -
 
-@interface AFURLConnectionOperation ()
+@interface RPRURLConnectionOperation ()
 @property (readwrite, nonatomic, strong) NSURLRequest *request;
 @property (readwrite, nonatomic, strong) NSURLResponse *response;
 @end
 
-@interface AFHTTPRequestOperation ()
+@interface RPRHTTPRequestOperation ()
 @property (readwrite, nonatomic, strong) NSHTTPURLResponse *response;
 @property (readwrite, nonatomic, strong) id responseObject;
 @property (readwrite, nonatomic, strong) NSError *responseSerializationError;
 @property (readwrite, nonatomic, strong) NSRecursiveLock *lock;
 @end
 
-@implementation AFHTTPRequestOperation
+@implementation RPRHTTPRequestOperation
 @dynamic response;
 @dynamic lock;
 
@@ -65,12 +65,12 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [AFHTTPResponseSerializer serializer];
+    self.responseSerializer = [RPRHTTPResponseSerializer serializer];
 
     return self;
 }
 
-- (void)setResponseSerializer:(AFHTTPResponseSerializer <AFURLResponseSerialization> *)responseSerializer {
+- (void)setResponseSerializer:(RPRHTTPResponseSerializer <RPRURLResponseSerialization> *)responseSerializer {
     NSParameterAssert(responseSerializer);
 
     [self.lock lock];
@@ -102,12 +102,12 @@ static dispatch_group_t http_request_operation_completion_group() {
     }
 }
 
-#pragma mark - AFHTTPRequestOperation
+#pragma mark - RPRHTTPRequestOperation
 
-- (void)setCompletionBlockWithSuccess:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
-                              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure
+- (void)setCompletionBlockWithSuccess:(void (^)(RPRHTTPRequestOperation *operation, id responseObject))success
+                              failure:(void (^)(RPRHTTPRequestOperation *operation, NSError *error))failure
 {
-    // completionBlock is manually nilled out in AFURLConnectionOperation to break the retain cycle.
+    // completionBlock is manually nilled out in RPRURLConnectionOperation to break the retain cycle.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-retain-cycles"
 #pragma clang diagnostic ignored "-Wgnu"
@@ -148,7 +148,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma clang diagnostic pop
 }
 
-#pragma mark - AFURLRequestOperation
+#pragma mark - RPRURLRequestOperation
 
 - (void)pause {
     [super pause];
@@ -180,7 +180,7 @@ static dispatch_group_t http_request_operation_completion_group() {
         return nil;
     }
 
-    self.responseSerializer = [decoder decodeObjectOfClass:[AFHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
+    self.responseSerializer = [decoder decodeObjectOfClass:[RPRHTTPResponseSerializer class] forKey:NSStringFromSelector(@selector(responseSerializer))];
 
     return self;
 }
@@ -194,7 +194,7 @@ static dispatch_group_t http_request_operation_completion_group() {
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone {
-    AFHTTPRequestOperation *operation = [super copyWithZone:zone];
+    RPRHTTPRequestOperation *operation = [super copyWithZone:zone];
 
     operation.responseSerializer = [self.responseSerializer copyWithZone:zone];
     operation.completionQueue = self.completionQueue;

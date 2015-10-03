@@ -1,4 +1,4 @@
-// AFURLSessionManager.h
+// RPRURLSessionManager.h
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,11 +21,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFURLResponseSerialization.h"
-#import "AFURLRequestSerialization.h"
-#import "AFSecurityPolicy.h"
+#import "RPRURLResponseSerialization.h"
+#import "RPRURLRequestSerialization.h"
+#import "RPRSecurityPolicy.h"
 #if !TARGET_OS_WATCH
-#import "AFNetworkReachabilityManager.h"
+#import "RPRNetworkReachabilityManager.h"
 #endif
 
 #ifndef NS_DESIGNATED_INITIALIZER
@@ -37,15 +37,15 @@
 #endif
 
 /**
- `AFURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
+ `RPRURLSessionManager` creates and manages an `NSURLSession` object based on a specified `NSURLSessionConfiguration` object, which conforms to `<NSURLSessionTaskDelegate>`, `<NSURLSessionDataDelegate>`, `<NSURLSessionDownloadDelegate>`, and `<NSURLSessionDelegate>`.
 
  ## Subclassing Notes
 
- This is the base class for `AFHTTPSessionManager`, which adds functionality specific to making HTTP requests. If you are looking to extend `AFURLSessionManager` specifically for HTTP, consider subclassing `AFHTTPSessionManager` instead.
+ This is the base class for `RPRHTTPSessionManager`, which adds functionality specific to making HTTP requests. If you are looking to extend `RPRURLSessionManager` specifically for HTTP, consider subclassing `RPRHTTPSessionManager` instead.
 
  ## NSURLSession & NSURLSessionTask Delegate Methods
 
- `AFURLSessionManager` implements the following delegate methods:
+ `RPRURLSessionManager` implements the following delegate methods:
 
  ### `NSURLSessionDelegate`
 
@@ -77,7 +77,7 @@
 
  ## Network Reachability Monitoring
 
- Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `AFNetworkReachabilityManager` for more details.
+ Network reachability status and change monitoring is available through the `reachabilityManager` property. Applications may choose to monitor network reachability conditions in order to prevent or suspend any outbound requests. See `RPRNetworkReachabilityManager` for more details.
 
  ## NSCoding Caveats
 
@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000) || (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 1090) || TARGET_OS_WATCH
 
-@interface AFURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
+@interface RPRURLSessionManager : NSObject <NSURLSessionDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSSecureCoding, NSCopying>
 
 /**
  The managed session.
@@ -108,20 +108,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic, strong) NSOperationQueue *operationQueue;
 
 /**
- Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to an instance of `AFJSONResponseSerializer`.
+ Responses sent from the server in data tasks created with `dataTaskWithRequest:success:failure:` and run using the `GET` / `POST` / et al. convenience methods are automatically validated and serialized by the response serializer. By default, this property is set to an instance of `RPRJSONResponseSerializer`.
 
  @warning `responseSerializer` must not be `nil`.
  */
-@property (nonatomic, strong) id <AFURLResponseSerialization> responseSerializer;
+@property (nonatomic, strong) id <RPRURLResponseSerialization> responseSerializer;
 
 ///-------------------------------
 /// @name Managing Security Policy
 ///-------------------------------
 
 /**
- The security policy used by created request operations to evaluate server trust for secure connections. `AFURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
+ The security policy used by created request operations to evaluate server trust for secure connections. `RPRURLSessionManager` uses the `defaultPolicy` unless otherwise specified.
  */
-@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+@property (nonatomic, strong) RPRSecurityPolicy *securityPolicy;
 
 #if !TARGET_OS_WATCH
 ///--------------------------------------
@@ -129,9 +129,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///--------------------------------------
 
 /**
- The network reachability manager. `AFURLSessionManager` uses the `sharedManager` by default.
+ The network reachability manager. `RPRURLSessionManager` uses the `sharedManager` by default.
  */
-@property (readwrite, nonatomic, strong) AFNetworkReachabilityManager *reachabilityManager;
+@property (readwrite, nonatomic, strong) RPRNetworkReachabilityManager *reachabilityManager;
 #endif
 
 ///----------------------------
@@ -187,9 +187,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Whether to attempt to retry creation of upload tasks for background sessions when initial call returns `nil`. `NO` by default.
 
- @bug As of iOS 7.0, there is a bug where upload tasks created for background tasks are sometimes `nil`. As a workaround, if this property is `YES`, AFNetworking will follow Apple's recommendation to try creating the task again.
+ @bug As of iOS 7.0, there is a bug where upload tasks created for background tasks are sometimes `nil`. As a workaround, if this property is `YES`, RPRNetworking will follow Apple's recommendation to try creating the task again.
 
- @see https://github.com/AFNetworking/AFNetworking/issues/1675
+ @see https://github.com/RPRNetworking/RPRNetworking/issues/1675
  */
 @property (nonatomic, assign) BOOL attemptsToRecreateUploadTasksForBackgroundSessions;
 
@@ -426,7 +426,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Sets a block to be executed when a download task has completed a download, as handled by the `NSURLSessionDownloadDelegate` method `URLSession:downloadTask:didFinishDownloadingToURL:`.
 
- @param block A block object to be executed when a download task has completed. The block returns the URL the download should be moved to, and takes three arguments: the session, the download task, and the temporary location of the downloaded file. If the file manager encounters an error while attempting to move the temporary file to the destination, an `AFURLSessionDownloadTaskDidFailToMoveFileNotification` will be posted, with the download task as its object, and the user info of the error.
+ @param block A block object to be executed when a download task has completed. The block returns the URL the download should be moved to, and takes three arguments: the session, the download task, and the temporary location of the downloaded file. If the file manager encounters an error while attempting to move the temporary file to the destination, an `RPRURLSessionDownloadTaskDidFailToMoveFileNotification` will be posted, with the download task as its object, and the user info of the error.
  */
 - (void)setDownloadTaskDidFinishDownloadingBlock:(nullable NSURL * (^)(NSURLSession *session, NSURLSessionDownloadTask *downloadTask, NSURL *location))block;
 
@@ -455,100 +455,100 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Posted when a task begins executing.
 
- @deprecated Use `AFNetworkingTaskDidResumeNotification` instead.
+ @deprecated Use `RPRNetworkingTaskDidResumeNotification` instead.
  */
-extern NSString * const AFNetworkingTaskDidStartNotification DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidStartNotification DEPRECATED_ATTRIBUTE;
 
 /**
  Posted when a task resumes.
  */
-extern NSString * const AFNetworkingTaskDidResumeNotification;
+extern NSString * const RPRNetworkingTaskDidResumeNotification;
 
 /**
  Posted when a task finishes executing. Includes a userInfo dictionary with additional information about the task.
 
- @deprecated Use `AFNetworkingTaskDidCompleteNotification` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteNotification` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishNotification DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishNotification DEPRECATED_ATTRIBUTE;
 
 /**
  Posted when a task finishes executing. Includes a userInfo dictionary with additional information about the task.
  */
-extern NSString * const AFNetworkingTaskDidCompleteNotification;
+extern NSString * const RPRNetworkingTaskDidCompleteNotification;
 
 /**
  Posted when a task suspends its execution.
  */
-extern NSString * const AFNetworkingTaskDidSuspendNotification;
+extern NSString * const RPRNetworkingTaskDidSuspendNotification;
 
 /**
  Posted when a session is invalidated.
  */
-extern NSString * const AFURLSessionDidInvalidateNotification;
+extern NSString * const RPRURLSessionDidInvalidateNotification;
 
 /**
  Posted when a session download task encountered an error when moving the temporary download file to a specified destination.
  */
-extern NSString * const AFURLSessionDownloadTaskDidFailToMoveFileNotification;
+extern NSString * const RPRURLSessionDownloadTaskDidFailToMoveFileNotification;
 
 /**
- The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
+ The raw response data of the task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if response data exists for the task.
 
- @deprecated Use `AFNetworkingTaskDidCompleteResponseDataKey` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteResponseDataKey` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishResponseDataKey DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishResponseDataKey DEPRECATED_ATTRIBUTE;
 
 /**
- The raw response data of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if response data exists for the task.
+ The raw response data of the task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if response data exists for the task.
  */
-extern NSString * const AFNetworkingTaskDidCompleteResponseDataKey;
+extern NSString * const RPRNetworkingTaskDidCompleteResponseDataKey;
 
 /**
- The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the response was serialized.
+ The serialized response object of the task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if the response was serialized.
 
- @deprecated Use `AFNetworkingTaskDidCompleteSerializedResponseKey` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteSerializedResponseKey` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishSerializedResponseKey DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishSerializedResponseKey DEPRECATED_ATTRIBUTE;
 
 /**
- The serialized response object of the task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the response was serialized.
+ The serialized response object of the task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if the response was serialized.
  */
-extern NSString * const AFNetworkingTaskDidCompleteSerializedResponseKey;
+extern NSString * const RPRNetworkingTaskDidCompleteSerializedResponseKey;
 
 /**
- The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
+ The response serializer used to serialize the response. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
 
- @deprecated Use `AFNetworkingTaskDidCompleteResponseSerializerKey` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteResponseSerializerKey` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishResponseSerializerKey DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishResponseSerializerKey DEPRECATED_ATTRIBUTE;
 
 /**
- The response serializer used to serialize the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
+ The response serializer used to serialize the response. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if the task has an associated response serializer.
  */
-extern NSString * const AFNetworkingTaskDidCompleteResponseSerializerKey;
+extern NSString * const RPRNetworkingTaskDidCompleteResponseSerializerKey;
 
 /**
- The file path associated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
+ The file path associated with the download task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
 
- @deprecated Use `AFNetworkingTaskDidCompleteAssetPathKey` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteAssetPathKey` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishAssetPathKey DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishAssetPathKey DEPRECATED_ATTRIBUTE;
 
 /**
- The file path associated with the download task. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
+ The file path associated with the download task. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if an the response data has been stored directly to disk.
  */
-extern NSString * const AFNetworkingTaskDidCompleteAssetPathKey;
+extern NSString * const RPRNetworkingTaskDidCompleteAssetPathKey;
 
 /**
- Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
+ Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if an error exists.
 
- @deprecated Use `AFNetworkingTaskDidCompleteErrorKey` instead.
+ @deprecated Use `RPRNetworkingTaskDidCompleteErrorKey` instead.
  */
-extern NSString * const AFNetworkingTaskDidFinishErrorKey DEPRECATED_ATTRIBUTE;
+extern NSString * const RPRNetworkingTaskDidFinishErrorKey DEPRECATED_ATTRIBUTE;
 
 /**
- Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `AFNetworkingTaskDidFinishNotification` if an error exists.
+ Any error associated with the task, or the serialization of the response. Included in the userInfo dictionary of the `RPRNetworkingTaskDidFinishNotification` if an error exists.
  */
-extern NSString * const AFNetworkingTaskDidCompleteErrorKey;
+extern NSString * const RPRNetworkingTaskDidCompleteErrorKey;
 
 NS_ASSUME_NONNULL_END

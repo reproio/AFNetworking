@@ -1,4 +1,4 @@
-// AFURLConnectionOperation.h
+// RPRURLConnectionOperation.h
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,9 +22,9 @@
 #import <Foundation/Foundation.h>
 
 #import <Availability.h>
-#import "AFURLRequestSerialization.h"
-#import "AFURLResponseSerialization.h"
-#import "AFSecurityPolicy.h"
+#import "RPRURLRequestSerialization.h"
+#import "RPRURLResponseSerialization.h"
+#import "RPRSecurityPolicy.h"
 
 #ifndef NS_DESIGNATED_INITIALIZER
 #if __has_attribute(objc_designated_initializer)
@@ -35,17 +35,17 @@
 #endif
 
 /**
- `AFURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
+ `RPRURLConnectionOperation` is a subclass of `NSOperation` that implements `NSURLConnection` delegate methods.
 
  ## Subclassing Notes
 
  This is the base class of all network request operations. You may wish to create your own subclass in order to implement additional `NSURLConnection` delegate methods (see "`NSURLConnection` Delegate Methods" below), or to provide additional properties and/or class constructors.
 
- If you are creating a subclass that communicates over the HTTP or HTTPS protocols, you may want to consider subclassing `AFHTTPRequestOperation` instead, as it supports specifying acceptable content types or status codes.
+ If you are creating a subclass that communicates over the HTTP or HTTPS protocols, you may want to consider subclassing `RPRHTTPRequestOperation` instead, as it supports specifying acceptable content types or status codes.
 
  ## NSURLConnection Delegate Methods
 
- `AFURLConnectionOperation` implements the following `NSURLConnection` delegate methods:
+ `RPRURLConnectionOperation` implements the following `NSURLConnection` delegate methods:
 
  - `connection:didReceiveResponse:`
  - `connection:didReceiveData:`
@@ -61,9 +61,9 @@
 
  ## Callbacks and Completion Blocks
 
- The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. Make sure to handle cancelled operations appropriately when setting a `completionBlock` (i.e. returning early before parsing response data). See the implementation of any of the `AFHTTPRequestOperation` subclasses for an example of this.
+ The built-in `completionBlock` provided by `NSOperation` allows for custom behavior to be executed after the request finishes. It is a common pattern for class constructors in subclasses to take callback block parameters, and execute them conditionally in the body of its `completionBlock`. Make sure to handle cancelled operations appropriately when setting a `completionBlock` (i.e. returning early before parsing response data). See the implementation of any of the `RPRHTTPRequestOperation` subclasses for an example of this.
 
- Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `AFURLConnectionOperation`'s implementation includes a workaround to mitigate retain cycles, and what Apple rather ominously refers to as ["The Deallocation Problem"](http://developer.apple.com/library/ios/#technotes/tn2109/).
+ Subclasses are strongly discouraged from overriding `setCompletionBlock:`, as `RPRURLConnectionOperation`'s implementation includes a workaround to mitigate retain cycles, and what Apple rather ominously refers to as ["The Deallocation Problem"](http://developer.apple.com/library/ios/#technotes/tn2109/).
 
  ## SSL Pinning
 
@@ -75,7 +75,7 @@
 
  ## NSCoding & NSCopying Conformance
 
- `AFURLConnectionOperation` conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. However, because of the intrinsic limitations of capturing the exact state of an operation at a particular moment, there are some important caveats to keep in mind:
+ `RPRURLConnectionOperation` conforms to the `NSCoding` and `NSCopying` protocols, allowing operations to be archived to disk, and copied in memory, respectively. However, because of the intrinsic limitations of capturing the exact state of an operation at a particular moment, there are some important caveats to keep in mind:
 
  ### NSCoding Caveats
 
@@ -91,7 +91,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AFURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSSecureCoding, NSCopying>
+@interface RPRURLConnectionOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate, NSSecureCoding, NSCopying>
 
 ///-------------------------------
 /// @name Accessing Run Loop Modes
@@ -167,7 +167,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The security policy used to evaluate server trust for secure connections.
  */
-@property (nonatomic, strong) AFSecurityPolicy *securityPolicy;
+@property (nonatomic, strong) RPRSecurityPolicy *securityPolicy;
 
 ///------------------------
 /// @name Accessing Streams
@@ -220,7 +220,7 @@ NS_ASSUME_NONNULL_BEGIN
 // FIXME: It doesn't seem that this userInfo is used anywhere in the implementation.
 
 ///------------------------------------------------------
-/// @name Initializing an AFURLConnectionOperation Object
+/// @name Initializing an RPRURLConnectionOperation Object
 ///------------------------------------------------------
 
 /**
@@ -253,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Resumes the execution of the paused request operation.
 
- Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `AFHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
+ Pause/Resume behavior varies depending on the underlying implementation for the operation class. In its base implementation, resuming a paused requests restarts the original request. However, since HTTP defines a specification for how to request a specific content range, `RPRHTTPRequestOperation` will resume downloading the request from where it left off, instead of restarting the original request.
  */
 - (void)resume;
 
@@ -334,11 +334,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Posted when an operation begins executing.
  */
-extern NSString * const AFNetworkingOperationDidStartNotification;
+extern NSString * const RPRNetworkingOperationDidStartNotification;
 
 /**
  Posted when an operation finishes.
  */
-extern NSString * const AFNetworkingOperationDidFinishNotification;
+extern NSString * const RPRNetworkingOperationDidFinishNotification;
 
 NS_ASSUME_NONNULL_END

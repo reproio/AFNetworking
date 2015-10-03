@@ -1,4 +1,4 @@
-// AFURLResponseSerialization.h
+// RPRURLResponseSerialization.h
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,11 +25,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /**
- The `AFURLResponseSerialization` protocol is adopted by an object that decodes data into a more useful object representation, according to details in the server response. Response serializers may additionally perform validation on the incoming response and data.
+ The `RPRURLResponseSerialization` protocol is adopted by an object that decodes data into a more useful object representation, according to details in the server response. Response serializers may additionally perform validation on the incoming response and data.
 
  For example, a JSON response serializer may check for an acceptable status code (`2XX` range) and content type (`application/json`), decoding a valid JSON response into an object.
  */
-@protocol AFURLResponseSerialization <NSObject, NSSecureCoding, NSCopying>
+@protocol RPRURLResponseSerialization <NSObject, NSSecureCoding, NSCopying>
 
 /**
  The response object decoded from the data associated with a specified response.
@@ -49,11 +49,11 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- `AFHTTPResponseSerializer` conforms to the `AFURLRequestSerialization` & `AFURLResponseSerialization` protocols, offering a concrete base implementation of query string / URL form-encoded parameter serialization and default request headers, as well as response status code and content type validation.
+ `RPRHTTPResponseSerializer` conforms to the `RPRURLRequestSerialization` & `RPRURLResponseSerialization` protocols, offering a concrete base implementation of query string / URL form-encoded parameter serialization and default request headers, as well as response status code and content type validation.
 
- Any request or response serializer dealing with HTTP is encouraged to subclass `AFHTTPResponseSerializer` in order to ensure consistent default behavior.
+ Any request or response serializer dealing with HTTP is encouraged to subclass `RPRHTTPResponseSerializer` in order to ensure consistent default behavior.
  */
-@interface AFHTTPResponseSerializer : NSObject <AFURLResponseSerialization>
+@interface RPRHTTPResponseSerializer : NSObject <RPRURLResponseSerialization>
 
 - (instancetype)init;
 
@@ -104,15 +104,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- `AFJSONResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes JSON responses.
+ `RPRJSONResponseSerializer` is a subclass of `RPRHTTPResponseSerializer` that validates and decodes JSON responses.
 
- By default, `AFJSONResponseSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
+ By default, `RPRJSONResponseSerializer` accepts the following MIME types, which includes the official standard, `application/json`, as well as other commonly-used types:
 
  - `application/json`
  - `text/json`
  - `text/javascript`
  */
-@interface AFJSONResponseSerializer : AFHTTPResponseSerializer
+@interface RPRJSONResponseSerializer : RPRHTTPResponseSerializer
 
 - (instancetype)init;
 
@@ -138,14 +138,14 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- `AFXMLParserResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLParser` objects.
+ `RPRXMLParserResponseSerializer` is a subclass of `RPRHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLParser` objects.
 
- By default, `AFXMLParserResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
+ By default, `RPRXMLParserResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
  - `application/xml`
  - `text/xml`
  */
-@interface AFXMLParserResponseSerializer : AFHTTPResponseSerializer
+@interface RPRXMLParserResponseSerializer : RPRHTTPResponseSerializer
 
 @end
 
@@ -154,14 +154,14 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
 
 /**
- `AFXMLDocumentResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLDocument` objects.
+ `RPRXMLDocumentResponseSerializer` is a subclass of `RPRHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLDocument` objects.
 
- By default, `AFXMLDocumentResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
+ By default, `RPRXMLDocumentResponseSerializer` accepts the following MIME types, which includes the official standard, `application/xml`, as well as other commonly-used types:
 
  - `application/xml`
  - `text/xml`
  */
-@interface AFXMLDocumentResponseSerializer : AFHTTPResponseSerializer
+@interface RPRXMLDocumentResponseSerializer : RPRHTTPResponseSerializer
 
 - (instancetype)init;
 
@@ -184,13 +184,13 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- `AFPropertyListResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLDocument` objects.
+ `RPRPropertyListResponseSerializer` is a subclass of `RPRHTTPResponseSerializer` that validates and decodes XML responses as an `NSXMLDocument` objects.
 
- By default, `AFPropertyListResponseSerializer` accepts the following MIME types:
+ By default, `RPRPropertyListResponseSerializer` accepts the following MIME types:
 
  - `application/x-plist`
  */
-@interface AFPropertyListResponseSerializer : AFHTTPResponseSerializer
+@interface RPRPropertyListResponseSerializer : RPRHTTPResponseSerializer
 
 - (instancetype)init;
 
@@ -218,9 +218,9 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- `AFImageResponseSerializer` is a subclass of `AFHTTPResponseSerializer` that validates and decodes image responses.
+ `RPRImageResponseSerializer` is a subclass of `RPRHTTPResponseSerializer` that validates and decodes image responses.
 
- By default, `AFImageResponseSerializer` accepts the following MIME types, which correspond to the image formats supported by UIImage or NSImage:
+ By default, `RPRImageResponseSerializer` accepts the following MIME types, which correspond to the image formats supported by UIImage or NSImage:
 
  - `image/tiff`
  - `image/jpeg`
@@ -233,7 +233,7 @@ NS_ASSUME_NONNULL_BEGIN
  - `image/x-xbitmap`
  - `image/x-win-bitmap`
  */
-@interface AFImageResponseSerializer : AFHTTPResponseSerializer
+@interface RPRImageResponseSerializer : RPRHTTPResponseSerializer
 
 #if defined(__IPHONE_OS_VERSION_MIN_REQUIRED)
 /**
@@ -252,9 +252,9 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -
 
 /**
- `AFCompoundSerializer` is a subclass of `AFHTTPResponseSerializer` that delegates the response serialization to the first `AFHTTPResponseSerializer` object that returns an object for `responseObjectForResponse:data:error:`, falling back on the default behavior of `AFHTTPResponseSerializer`. This is useful for supporting multiple potential types and structures of server responses with a single serializer.
+ `RPRCompoundSerializer` is a subclass of `RPRHTTPResponseSerializer` that delegates the response serialization to the first `RPRHTTPResponseSerializer` object that returns an object for `responseObjectForResponse:data:error:`, falling back on the default behavior of `RPRHTTPResponseSerializer`. This is useful for supporting multiple potential types and structures of server responses with a single serializer.
  */
-@interface AFCompoundResponseSerializer : AFHTTPResponseSerializer
+@interface RPRCompoundResponseSerializer : RPRHTTPResponseSerializer
 
 /**
  The component response serializers.
@@ -264,7 +264,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Creates and returns a compound serializer comprised of the specified response serializers.
 
- @warning Each response serializer specified must be a subclass of `AFHTTPResponseSerializer`, and response to `-validateResponse:data:error:`.
+ @warning Each response serializer specified must be a subclass of `RPRHTTPResponseSerializer`, and response to `-validateResponse:data:error:`.
  */
 + (instancetype)compoundSerializerWithResponseSerializers:(NSArray *)responseSerializers;
 
@@ -279,33 +279,33 @@ NS_ASSUME_NONNULL_BEGIN
 
  The following error domain is predefined.
 
- - `NSString * const AFURLResponseSerializationErrorDomain`
+ - `NSString * const RPRURLResponseSerializationErrorDomain`
 
  ### Constants
 
- `AFURLResponseSerializationErrorDomain`
- AFURLResponseSerializer errors. Error codes for `AFURLResponseSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
+ `RPRURLResponseSerializationErrorDomain`
+ RPRURLResponseSerializer errors. Error codes for `RPRURLResponseSerializationErrorDomain` correspond to codes in `NSURLErrorDomain`.
  */
-extern NSString * const AFURLResponseSerializationErrorDomain;
+extern NSString * const RPRURLResponseSerializationErrorDomain;
 
 /**
  ## User info dictionary keys
 
  These keys may exist in the user info dictionary, in addition to those defined for NSError.
 
- - `NSString * const AFNetworkingOperationFailingURLResponseErrorKey`
- - `NSString * const AFNetworkingOperationFailingURLResponseDataErrorKey`
+ - `NSString * const RPRNetworkingOperationFailingURLResponseErrorKey`
+ - `NSString * const RPRNetworkingOperationFailingURLResponseDataErrorKey`
 
  ### Constants
 
- `AFNetworkingOperationFailingURLResponseErrorKey`
- The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
+ `RPRNetworkingOperationFailingURLResponseErrorKey`
+ The corresponding value is an `NSURLResponse` containing the response of the operation associated with an error. This key is only present in the `RPRURLResponseSerializationErrorDomain`.
 
- `AFNetworkingOperationFailingURLResponseDataErrorKey`
- The corresponding value is an `NSData` containing the original data of the operation associated with an error. This key is only present in the `AFURLResponseSerializationErrorDomain`.
+ `RPRNetworkingOperationFailingURLResponseDataErrorKey`
+ The corresponding value is an `NSData` containing the original data of the operation associated with an error. This key is only present in the `RPRURLResponseSerializationErrorDomain`.
  */
-extern NSString * const AFNetworkingOperationFailingURLResponseErrorKey;
+extern NSString * const RPRNetworkingOperationFailingURLResponseErrorKey;
 
-extern NSString * const AFNetworkingOperationFailingURLResponseDataErrorKey;
+extern NSString * const RPRNetworkingOperationFailingURLResponseDataErrorKey;
 
 NS_ASSUME_NONNULL_END

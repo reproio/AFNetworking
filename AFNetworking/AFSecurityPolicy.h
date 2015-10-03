@@ -1,4 +1,4 @@
-// AFSecurityPolicy.h
+// RPRSecurityPolicy.h
 // Copyright (c) 2011–2015 Alamofire Software Foundation (http://alamofire.org/)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,26 +22,26 @@
 #import <Foundation/Foundation.h>
 #import <Security/Security.h>
 
-typedef NS_ENUM(NSUInteger, AFSSLPinningMode) {
-    AFSSLPinningModeNone,
-    AFSSLPinningModePublicKey,
-    AFSSLPinningModeCertificate,
+typedef NS_ENUM(NSUInteger, RPRSSLPinningMode) {
+    RPRSSLPinningModeNone,
+    RPRSSLPinningModePublicKey,
+    RPRSSLPinningModeCertificate,
 };
 
 /**
- `AFSecurityPolicy` evaluates server trust against pinned X.509 certificates and public keys over secure connections.
+ `RPRSecurityPolicy` evaluates server trust against pinned X.509 certificates and public keys over secure connections.
 
  Adding pinned SSL certificates to your app helps prevent man-in-the-middle attacks and other vulnerabilities. Applications dealing with sensitive customer data or financial information are strongly encouraged to route all communication over an HTTPS connection with SSL pinning configured and enabled.
  */
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AFSecurityPolicy : NSObject
+@interface RPRSecurityPolicy : NSObject
 
 /**
- The criteria by which server trust should be evaluated against the pinned SSL certificates. Defaults to `AFSSLPinningModeNone`.
+ The criteria by which server trust should be evaluated against the pinned SSL certificates. Defaults to `RPRSSLPinningModeNone`.
  */
-@property (readonly, nonatomic, assign) AFSSLPinningMode SSLPinningMode;
+@property (readonly, nonatomic, assign) RPRSSLPinningMode SSLPinningMode;
 
 /**
  The certificates used to evaluate server trust according to the SSL pinning mode. By default, this property is set to any (`.cer`) certificates included in the app bundle. Note that if you create an array with duplicate certificates, the duplicate certificates will be removed. Note that if pinning is enabled, `evaluateServerTrust:forDomain:` will return true if any pinned certificate matches.
@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @return A new security policy.
  */
-+ (instancetype)policyWithPinningMode:(AFSSLPinningMode)pinningMode;
++ (instancetype)policyWithPinningMode:(RPRSSLPinningMode)pinningMode;
 
 ///------------------------------
 /// @name Evaluating Server Trust
@@ -123,20 +123,20 @@ NS_ASSUME_NONNULL_END
 /**
  ## SSL Pinning Modes
 
- The following constants are provided by `AFSSLPinningMode` as possible SSL pinning modes.
+ The following constants are provided by `RPRSSLPinningMode` as possible SSL pinning modes.
 
  enum {
- AFSSLPinningModeNone,
- AFSSLPinningModePublicKey,
- AFSSLPinningModeCertificate,
+ RPRSSLPinningModeNone,
+ RPRSSLPinningModePublicKey,
+ RPRSSLPinningModeCertificate,
  }
 
- `AFSSLPinningModeNone`
+ `RPRSSLPinningModeNone`
  Do not used pinned certificates to validate servers.
 
- `AFSSLPinningModePublicKey`
+ `RPRSSLPinningModePublicKey`
  Validate host certificates against public keys of pinned certificates.
 
- `AFSSLPinningModeCertificate`
+ `RPRSSLPinningModeCertificate`
  Validate host certificates against pinned certificates.
 */
